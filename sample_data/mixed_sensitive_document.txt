@@ -1,0 +1,24 @@
+Employee Onboarding Record — INTERNAL USE ONLY
+
+Employee ID: EMP-40218
+Name: Ravi Kumar
+Email: ravi.kumar.sample@example.com
+Phone: 9876543210
+Date of Birth: 14/03/1998
+
+Government ID (Aadhaar, sample format): 2345 6789 1234
+PAN (sample format): ABCDE1234F
+
+Bank Account (sample): 123456789012
+IFSC (sample): HDFC0001234
+Salary: Rs. 45,000 per month
+
+System credentials (sample — not real):
+password: Sup3rSecret!99
+api_key: sk_test_51Hxxxxxxxxxxxxxxxxxxxxxx1234
+
+Network reference:
+Server IP: 192.168.1.25
+Internal URL: https://internal.example.com/hr/records
+
+This document is CONFIDENTIAL and intended for internal HR use only.

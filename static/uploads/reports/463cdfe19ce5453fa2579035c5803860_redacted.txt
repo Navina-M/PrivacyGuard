@@ -1,0 +1,55 @@
+NAVINA M
+Undergraduate Student
+/envel⌢[REDACTED - EMAIL]♂[REDACTED - NER_ORG]/gl⌢bePortfolio
+/githubGitHub/linkedinLinkedIn/codeLeetCode♂laptop-codeGeeksforGeeks
+Profile Summary
+Final-year Computer Science and Engineering student with hands-on experience in cybersecurity, network secu-
+rity, vulnerability assessment, and security testing. Experienced in scanning, enumeration, controlled exploitation,
+Python-based security automation, and secure network design. Developed projects involving brute-force simulation,
+hospital network security, data leakage prevention, and system health monitoring. Strong foundation in networking,
+programming, and security principles.
+Education
+[REDACTED - NER_ORG] and Engineering2023 – 2027
+[REDACTED - NER_ORG]: 8.46
+HSC (Mathematics & Biology)2020 – 2023
+AKDR Girls Hr. Sec. School 89.5%
+[REDACTED - NER_ORG], Network Security, Security Testing, [REDACTED - NER_ORG], Authentication
+Networking:[REDACTED - NER_ORG], [REDACTED - NER_ORG], [REDACTED - NER_GPE], Routing, [REDACTED - NER_ORG]/IP, HTTP/HTTPS, [REDACTED - NER_ORG], Telnet
+Programming:Python, [REDACTED - NER_PERSON], C
+Security Tools:[REDACTED - NER_PERSON], [REDACTED - NER_ORG], [REDACTED - NER_PERSON], [REDACTED - NER_GPE] Packet Tracer
+Database & Web:MySQL, MongoDB, [REDACTED - NER_ORG], [REDACTED - NER_ORG], [REDACTED - NER_ORG], [REDACTED - NER_ORG]
+Tools:Git, Linux, Google Colab, [REDACTED - NER_PERSON]
+Experience
+[REDACTED - NER_ORG] – Supraja TechnologiesJul 2025 – Sep 2025
+•Performed scanning, enumeration, and basic exploitation in a controlled cybersecurity environment
+•Studied [REDACTED - NER_ORG] principles, security tools, vulnerability identification, and mitigation techniques
+•Developed an [REDACTED - NER_ORG] Forcer using Python for security testing
+Python Developer Intern – PsyliqMar 2024 – Apr 2024
+•Applied Python and object-oriented programming concepts to real-time development tasks
+•Practiced Python development using [REDACTED - NER_ORG] [REDACTED - NER_PERSON]
+•Secure [REDACTED - NER_ORG] – [REDACTED - NER_ORG], [REDACTED - NER_ORG], [REDACTED - NER_ORG], [REDACTED - NER_GPE] Packet Tracer2025
+Designed a segmented hospital network using VLANs, [REDACTED - NER_ORG], routing, and firewall rules to control network access.
+•Advanced Brut3Zero Simulation Tool – Python, [REDACTED - NER_PERSON], Networking2025
+Built a multiprotocol brute-force simulation tool with [REDACTED - NER_ORG], automated form detection, reporting, and email
+integration.
+[REDACTED - NER_ORG] – Python, SpaCy, Regex, [REDACTED - NER_PERSON] an [REDACTED - NER_ORG]-based system using structural exclusion and regex processing to filter irrelevant text.
+•System Health Score – Python, [REDACTED - NER_PERSON], Regex2026
+Developed scanning engines using regex lookarounds to calculate threat metrics while preventing [REDACTED - NER_ORG] cross-
+contamination.
+•MedicoScan – FastAPI, [REDACTED - NER_ORG], Scikit-Learn2026
+Developed an [REDACTED - NER_GPE]-assisted system for processing medical reports using [REDACTED - NER_ORG] and machine learning.
+Certifications
+•Computer Networks and Internet Protocol – NPTEL Apr 2026
+•Cyber Job Simulation – Deloitte Feb 2026
+•Introduction to Cryptography – Wolfram Nov 2025
+•Cisco Packet Tracer – Cisco Networking Academy Aug 2025
+•Introduction to [REDACTED - NER_ORG] Dec 2024
+•DBMS – [REDACTED - NER_ORG] Apr 2025
+Activities
+•IEEE Student MemberMar 2026 – Dec 2026
+Member ID: [REDACTED - BANK_ACCOUNT_IN]
+•NSS Volunteer 2023 – 2026
+•Event [REDACTED - NER_PERSON] – 2026
+•CTF Participant 2024 – 2026
+•Magazine Contributor 2023 – 2026
+1

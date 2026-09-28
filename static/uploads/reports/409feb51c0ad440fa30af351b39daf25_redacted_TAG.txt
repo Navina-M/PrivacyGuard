@@ -1,0 +1,56 @@
+--- Page 1 ---
+NAVINA M
+Undergraduate Student
+/envel⌢[REDACTED - EMAIL]♂[REDACTED - NER_ORG]/gl⌢bePortfolio
+/githubGitHub/linkedinLinkedIn/codeLeetCode♂laptop-codeGeeksforGeeks
+Profile Summary
+Final-year Computer Science and Engineering student with hands-on experience in [REDACTED - NER_GPE], [REDACTED - NER_ORG], data process-
+ing, computer vision, and application development. Experienced with [REDACTED - NER_ORG], OpenCV, MediaPipe, [REDACTED - NER_PERSON],
+NumPy, [REDACTED - NER_ORG], and LSTM-based projects. Developed applications involving medical report analysis, sentiment trend
+detection, data leakage prevention, and [REDACTED - NER_GPE]-powered database querying. Strong foundation in programming, problem
+solving, and applying [REDACTED - NER_ORG] techniques to real-world problems.
+Education
+[REDACTED - NER_ORG] and Engineering2023 – 2027
+[REDACTED - NER_ORG]: 8.46
+HSC (Mathematics & Biology)2020 – 2023
+AKDR Girls Hr. Sec. School 89.5%
+[REDACTED - NER_ORG], [REDACTED - NER_PERSON], [REDACTED - NER_ORG]:MySQL, MongoDB, [REDACTED - NER_ORG], [REDACTED - NER_ORG], Regex
+Web Technologies:HTML, [REDACTED - NER_ORG], [REDACTED - NER_ORG]
+Tools:Git, [REDACTED - NER_ORG], [REDACTED - NER_ORG], [REDACTED - NER_ORG], [REDACTED - NER_PERSON], Cisco Packet Tracer, [REDACTED - NER_PERSON]
+Experience
+[REDACTED - NER_ORG] – Supraja TechnologiesJul 2025 – Sep 2025
+•Worked on real-time cybersecurity tasks involving scanning, enumeration, and basic exploitation in a controlled
+environment
+•Developed an [REDACTED - NER_ORG] Forcer using Python and studied techniques for strengthening credentials against
+digital threats
+Python Developer Intern – PsyliqMar 2024 – Apr 2024
+•Applied Python and object-oriented programming concepts to real-time development tasks
+•Practiced Python development using [REDACTED - NER_ORG] [REDACTED - NER_PERSON]
+•MedicoScan – FastAPI, [REDACTED - NER_ORG], [REDACTED - NER_ORG], [REDACTED - NER_PERSON], NumPy2026
+Developed an [REDACTED - NER_GPE]-assisted medical report interpretation system using [REDACTED - NER_ORG] and a [REDACTED - NER_ORG] model to predict
+diseases and provide simplified explanations.
+•System Health Score – Python, [REDACTED - NER_PERSON], Regex2026
+Developed custom scanning engines using regex lookarounds to calculate threat metrics while preventing [REDACTED - NER_ORG]
+cross-contamination.
+•Data Leakage Prevention System – Python, SpaCy, [REDACTED - NER_PERSON] a structural exclusion matrix and [REDACTED - NER_ORG]-based processing system to classify and filter irrelevant text.
+•Social [REDACTED - NER_ORG], LSTM, NLP2025
+Trained and evaluated an LSTM model on a 70K sentiment dataset using an 80:20 split, achieving 75% accuracy.
+•AI-Powered Query Interface – Python, [REDACTED - NER_ORG], [REDACTED - NER_ORG], [REDACTED - NER_ORG] an intelligent database query system using an [REDACTED - NER_ORG] to generate database-backed responses.
+Certifications
+•Become a Software AI Engineer – Udemy April 2026
+•Computer [REDACTED - NER_ORG] and Internet Protocol – [REDACTED - NER_ORG] April 2026
+•Cyber Job Simulation – Deloitte Feb 2026
+•Introduction to Cryptography – Wolfram Nov 2025
+•Cisco Packet Tracer – Cisco Networking Academy Aug 2025
+•DBMS – [REDACTED - NER_ORG] Apr 2025
+•Introduction to [REDACTED - NER_ORG] Dec 2024
+Activities
+•IEEE Student MemberMar 2026 – Dec 2026
+Member ID: [REDACTED - BANK_ACCOUNT_IN]
+•NSS Volunteer 2023 – 2026
+Participated in rural outreach, cleanliness drives, and tree plantation activities
+•Event Organizer 2025 – 2026
+Organized AI Prompt Arena, [REDACTED - NER_ORG], and Power BI Workshop
+•Magazine Contributor 2023 – 2026
+Contributed articles, drawings, quotes, and creative content to the [REDACTED - NER_ORG] annual magazine
+1

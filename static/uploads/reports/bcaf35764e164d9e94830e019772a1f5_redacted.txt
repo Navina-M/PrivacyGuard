@@ -1,0 +1,24 @@
+Employee Onboarding Record — [REDACTED - CONFIDENTIAL_MARKER]
+
+[REDACTED - EMPLOYEE_ID]
+Name: Ravi Kumar
+Email: [REDACTED - EMAIL]
+Phone: [REDACTED - PHONE_IN]
+Date of Birth: [REDACTED - DOB]
+
+Government ID (Aadhaar, sample format): [REDACTED - AADHAAR]
+PAN (sample format): [REDACTED - PAN]
+
+Bank Account (sample): [REDACTED - AADHAAR]
+IFSC (sample): [REDACTED - IFSC]
+Salary: Rs. 45,000 per month
+
+System credentials (sample — not real):
+[REDACTED - PASSWORD_FIELD]
+[REDACTED - API_KEY_GENERIC]
+
+Network reference:
+Server IP: [REDACTED - IPV4]
+Internal URL: [REDACTED - URL]
+
+This document is [REDACTED - CONFIDENTIAL_MARKER] and intended for internal HR use only.

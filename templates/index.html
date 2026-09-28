@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block title %}PrivacyGuard Edge — Local DLP Scanner & Universal Redaction{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    Zero Cloud Transmission · 100% On-Device DLP
+  </div>
+  <h1>Detect & Redact Sensitive Data<br><span class="hero-highlight">Before It Leaves Your Hands</span></h1>
+  <p class="hero-sub">
+    Scan documents, source code, spreadsheets, logs, and images entirely on-device.
+    Identify government IDs, payment cards, credentials, API keys, and PII with algorithmic verification.
+  </p>
+</section>
+
+<!-- Supported File Formats Strip -->
+<div class="formats-strip">
+  <span style="font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-right:6px;">Universal Compatibility:</span>
+  <span class="format-chip">PDF</span>
+  <span class="format-chip">DOCX</span>
+  <span class="format-chip">XLSX / CSV</span>
+  <span class="format-chip">PPTX</span>
+  <span class="format-chip">JSON / YAML</span>
+  <span class="format-chip">LOG / SQL</span>
+  <span class="format-chip">CODE (PY, JS, TS, GO, C)</span>
+  <span class="format-chip">IMAGE / OCR</span>
+  <span class="format-chip">ZIP / TAR ARCHIVES</span>
+  <span class="format-chip" style="border-color:var(--brand-primary); color:var(--brand-primary);">Up to {{ max_mb }} MB</span>
+</div>
+
+<!-- Multi-Mode Scanner Card -->
+<section class="scanner-card">
+  <div class="scanner-tabs">
+    <button type="button" class="scanner-tab-btn active" id="tab-upload-btn" onclick="switchInputTab('upload')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      Upload Document / File
+    </button>
+    <button type="button" class="scanner-tab-btn" id="tab-paste-btn" onclick="switchInputTab('paste')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+      Paste Text or Code Snippet
+    </button>
+  </div>
+
+  <div class="scanner-tab-content">
+    <form action="{{ url_for('analyze') }}" method="post" enctype="multipart/form-data" id="scan-form">
+
+      <!-- Upload Tab Pane -->
+      <div class="tab-pane active" id="pane-upload">
+        <label for="document" class="dropzone-container" id="dropzone">
+          <input type="file" id="document" name="document">
+          <div class="dz-icon-circle">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <div class="dz-primary-text" id="dz-text">Drag & drop any file here, or browse from device</div>
+          <div class="dz-secondary-text">PDF, DOCX, XLSX, CSV, JSON, LOG, Code, Images, or Archives · Supports files over 10 MB (up to {{ max_mb }} MB)</div>
+          <div class="dz-file-badge" id="file-badge"></div>
+        </label>
+      </div>
+
+      <!-- Paste Text Tab Pane -->
+      <div class="tab-pane" id="pane-paste">
+        <div class="text-input-wrapper">
+          <textarea name="pasted_text" id="pasted_text" placeholder="Paste sensitive text, email transcripts, code snippets, cloud configs, or server logs here to analyze..."></textarea>
+        </div>
+
+        <!-- 1-Click Presets -->
+        <div class="presets-section">
+          <div class="presets-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            Quick Test Presets (Click to load sample):
+          </div>
+          <div class="presets-grid">
+            {% for key, sample in presets.items() %}
+              <button type="button" class="preset-btn" onclick="loadPreset('{{ key }}')">
+                <span>📄</span> {{ sample.title }}
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="scanner-actions">
+        <button type="submit" class="btn-scan" id="submit-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Run On-Device DLP Scan
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Detection Categories Grid -->
+<h2 class="category-headline">Comprehensive Detection & Checksum Engine</h2>
+<div class="category-grid">
+  <div class="category-card">
+    <div class="cat-header">
+      <span class="cat-icon">💳</span>
+      <h3>Financial Data & Cards</h3>
+    </div>
+    <p>Credit/Debit cards with <strong>Luhn Algorithm</strong> verification, Bank Accounts, IFSC codes, UPI IDs, SWIFT/BIC, IBAN, and compensation details.</p>
+  </div>
+
+  <div class="category-card">
+    <div class="cat-header">
+      <span class="cat-icon">🪪</span>
+      <h3>Government Identifiers</h3>
+    </div>
+    <p>Indian Aadhaar (with <strong>Verhoeff checksum</strong>), PAN Card (entity structure check), Passports, Voter ID (EPIC), Driving Licence, and US SSN.</p>
+  </div>
+
+  <div class="category-card">
+    <div class="cat-header">
+      <span class="cat-icon">🔑</span>
+      <h3>Credentials & Cloud Secrets</h3>
+    </div>
+    <p>AWS Keys (Access & Secret), OpenAI API keys, GitHub PATs, Google Cloud keys, Slack tokens, Stripe keys, Database URIs, JWTs, and Private Keys.</p>
+  </div>
+
+  <div class="category-card">
+    <div class="cat-header">
+      <span class="cat-icon">👤</span>
+      <h3>Personal Information (PII)</h3>
+    </div>
+    <p>Email addresses, phone numbers (+91 mobile and international E.164), Dates of Birth, postal PIN/Zip codes, and Named Entity Recognition.</p>
+  </div>
+
+  <div class="category-card">
+    <div class="cat-header">
+      <span class="cat-icon">🏥</span>
+      <h3>Health & Medical Data</h3>
+    </div>
+    <p>Patient Medical Record Numbers (MRN), prescription identifiers, and blood groups aligned with HIPAA & health privacy standards.</p>
+  </div>
+
+  <div class="category-card">
+    <div class="cat-header">
+      <span class="cat-icon">🌐</span>
+      <h3>Network & Infrastructure</h3>
+    </div>
+    <p>IPv4/IPv6 addresses, internal endpoints, hardware MAC addresses, and web URLs embedded across configuration logs.</p>
+  </div>
+</div>
+
+<script>
+  // Tab switching logic
+  function switchInputTab(tab) {
+    const uploadBtn = document.getElementById('tab-upload-btn');
+    const pasteBtn = document.getElementById('tab-paste-btn');
+    const paneUpload = document.getElementById('pane-upload');
+    const panePaste = document.getElementById('pane-paste');
+
+    if (tab === 'upload') {
+      uploadBtn.classList.add('active');
+      pasteBtn.classList.remove('active');
+      paneUpload.classList.add('active');
+      panePaste.classList.remove('active');
+    } else {
+      pasteBtn.classList.add('active');
+      uploadBtn.classList.remove('active');
+      panePaste.classList.add('active');
+      paneUpload.classList.remove('active');
+    }
+  }
+
+  // File dropzone interactivity
+  const fileInput = document.getElementById('document');
+  const dropzone = document.getElementById('dropzone');
+  const dzText = document.getElementById('dz-text');
+  const fileBadge = document.getElementById('file-badge');
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length) {
+      const file = fileInput.files[0];
+      const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+      dzText.textContent = `Selected: ${file.name} (${sizeMb} MB)`;
+      fileBadge.textContent = `✓ Ready for scan (${file.name})`;
+      fileBadge.style.display = 'inline-block';
+    }
+  });
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropzone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    }, false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+    }, false);
+  });
+
+  // Preset data loader
+  const presetsData = {{ presets|tojson }};
+  function loadPreset(key) {
+    if (presetsData && presetsData[key]) {
+      switchInputTab('paste');
+      document.getElementById('pasted_text').value = presetsData[key].text;
+      document.getElementById('pasted_text').focus();
+    }
+  }
+</script>
+{% endblock %}

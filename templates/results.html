@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+{% block title %}Audit Results — {{ filename }} — PrivacyGuard Edge{% endblock %}
+
+{% block content %}
+<!-- Header Bar with Actions -->
+<div class="results-header-bar">
+  <div class="results-meta">
+    <div class="results-eyebrow">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      Scan Completed Locally
+    </div>
+    <h1>{{ filename }}</h1>
+    <div style="font-size:0.84rem; color:var(--text-muted); margin-top:4px;">
+      Format: <strong>{{ extraction.source_type|upper }}</strong> · 
+      Characters: <strong>{{ extraction.char_count }}</strong> · 
+      Words: <strong>{{ extraction.word_count }}</strong> · 
+      Findings: <strong>{{ findings|length }}</strong>
+    </div>
+  </div>
+
+  <div class="results-action-buttons">
+    <a href="{{ url_for('redact', result_id=result_id) }}" class="btn-action secondary" id="download-redacted-btn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Download Redacted Text
+    </a>
+
+    <a href="{{ url_for('report', result_id=result_id) }}" class="btn-action primary">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+      Download PDF Audit Report
+    </a>
+
+    <a href="{{ url_for('export_json', result_id=result_id) }}" target="_blank" class="btn-action secondary" title="Export raw JSON findings">
+      JSON
+    </a>
+
+    <a href="{{ url_for('export_csv', result_id=result_id) }}" class="btn-action secondary" title="Export findings to CSV">
+      CSV
+    </a>
+  </div>
+</div>
+
+{% if extraction.note %}
+<div class="flash-alert" style="background:var(--bg-surface-raised); border-color:var(--border-strong); color:var(--text-secondary); margin-bottom:18px;">
+  <span>ℹ️ <strong>Extraction Note:</strong> {{ extraction.note }}</span>
+</div>
+{% endif %}
+
+<!-- Risk Overview Dashboard Panel -->
+<section class="risk-overview-panel">
+  <!-- Interactive SVG Gauge Meter -->
+  <div class="gauge-wrapper">
+    <svg class="gauge-svg" viewBox="0 0 120 120">
+      <circle class="gauge-bg" cx="60" cy="60" r="48"></circle>
+      {% set score = assessment.score %}
+      {% set max_score = 300 %}
+      {% set pct = (score / max_score) if score < max_score else 1.0 %}
+      {% set circumference = 2 * 3.14159 * 48 %}
+      {% set offset = circumference - (pct * circumference) %}
+      {% set gauge_color = 'var(--sev-critical)' if assessment.level == 'CRITICAL' else ('var(--sev-high)' if assessment.level == 'HIGH' else ('var(--sev-medium)' if assessment.level == 'MEDIUM' else 'var(--sev-low)')) %}
+      <circle class="gauge-progress" cx="60" cy="60" r="48"
+              style="stroke: {{ gauge_color }}; stroke-dasharray: {{ circumference }}; stroke-dashoffset: {{ offset }};">
+      </circle>
+    </svg>
+    <div class="gauge-center">
+      <div class="gauge-score" style="color: {{ gauge_color }};">{{ assessment.score }}</div>
+      <div class="gauge-label">Risk Index</div>
+    </div>
+  </div>
+
+  <!-- Risk Level & Regulatory Impact -->
+  <div class="risk-guidance-col">
+    {% set lvl_class = 'is-critical bg-critical' if assessment.level == 'CRITICAL' else ('is-high bg-high' if assessment.level == 'HIGH' else ('is-medium bg-medium' if assessment.level == 'MEDIUM' else 'is-low bg-low')) %}
+    <span class="level-badge-large {{ lvl_class }}">
+      {{ assessment.level }} RISK LEVEL
+    </span>
+    <p class="risk-recs-text">{{ assessment.recommendation }}</p>
+
+    {% if assessment.compliance_impacts %}
+    <div class="compliance-tags">
+      <span style="font-size:0.75rem; font-weight:600; color:var(--text-muted);">Impacted Regulations:</span>
+      {% for reg in assessment.compliance_impacts %}
+        <span class="comp-badge">{{ reg }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Key Risk Factors -->
+  <div class="risk-reasons-col">
+    <h3>Identified Risk Factors</h3>
+    <ul>
+      {% for r in assessment.reasons %}
+        <li>{{ r }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<!-- Severity Summary Chips (Click to filter table) -->
+<section class="severity-summary-bar">
+  <div class="sev-stat-card is-critical bg-critical" onclick="filterBySeverity('CRITICAL')">
+    <span class="sev-stat-name">Critical Risk</span>
+    <span class="sev-stat-count">{{ assessment.counts_by_severity.CRITICAL }}</span>
+  </div>
+  <div class="sev-stat-card is-high bg-high" onclick="filterBySeverity('HIGH')">
+    <span class="sev-stat-name">High Risk</span>
+    <span class="sev-stat-count">{{ assessment.counts_by_severity.HIGH }}</span>
+  </div>
+  <div class="sev-stat-card is-medium bg-medium" onclick="filterBySeverity('MEDIUM')">
+    <span class="sev-stat-name">Medium Risk</span>
+    <span class="sev-stat-count">{{ assessment.counts_by_severity.MEDIUM }}</span>
+  </div>
+  <div class="sev-stat-card is-low bg-low" onclick="filterBySeverity('LOW')">
+    <span class="sev-stat-name">Low Risk</span>
+    <span class="sev-stat-count">{{ assessment.counts_by_severity.LOW }}</span>
+  </div>
+</section>
+
+<!-- Results Main View Tabs & Style Switcher -->
+<div class="results-view-tabs">
+  <div class="results-tab-group">
+    <button type="button" class="res-tab-btn active" id="tab-highlight-btn" onclick="switchResultTab('highlight')">
+      🔍 Highlighted Document
+    </button>
+    <button type="button" class="res-tab-btn" id="tab-redacted-btn" onclick="switchResultTab('redacted')">
+      🛡️ Live Redacted Preview
+    </button>
+    <button type="button" class="res-tab-btn" id="tab-table-btn" onclick="switchResultTab('table')">
+      📋 Findings Inventory ({{ findings|length }})
+    </button>
+    <button type="button" class="res-tab-btn" id="tab-diff-btn" onclick="switchResultTab('diff')">
+      ⚖️ Side-by-Side View
+    </button>
+  </div>
+
+  <!-- Redaction Style Switcher -->
+  <div class="redaction-controls" id="redaction-controls-box">
+    <label for="redact-style-select">Redaction Mode:</label>
+    <select id="redact-style-select" class="style-select" onchange="updateRedactedPreview()">
+      <option value="TAG" selected>Typed Labels [REDACTED: EMAIL]</option>
+      <option value="MASK">Masking (••••••••)</option>
+      <option value="BLOCK">Blackout Blocks (████████)</option>
+      <option value="MINIMAL">Minimal [REDACTED]</option>
+    </select>
+  </div>
+</div>
+
+<!-- Viewer Content Container -->
+<section class="viewer-card">
+  <!-- 1. Highlighted Text Panel -->
+  <div class="res-tab-panel active" id="panel-highlight">
+    <div class="viewport-top-actions">
+      <span style="font-size:0.84rem; color:var(--text-muted);">Hover over any highlighted text badge to view detection details and confidence.</span>
+      <div style="display:flex; gap:10px; font-size:0.78rem; color:var(--text-muted);">
+        <span><mark class="hl-critical" style="padding:0 4px; font-size:0.75rem;">Critical</mark></span>
+        <span><mark class="hl-high" style="padding:0 4px; font-size:0.75rem;">High</mark></span>
+        <span><mark class="hl-medium" style="padding:0 4px; font-size:0.75rem;">Medium</mark></span>
+        <span><mark class="hl-low" style="padding:0 4px; font-size:0.75rem;">Low</mark></span>
+      </div>
+    </div>
+    <div class="text-viewport">
+      {% if highlighted %}{{ highlighted|safe }}{% else %}<p style="color:var(--text-muted);">No text extracted.</p>{% endif %}
+    </div>
+  </div>
+
+  <!-- 2. Live Redacted Preview Panel -->
+  <div class="res-tab-panel" id="panel-redacted">
+    <div class="viewport-top-actions">
+      <span style="font-size:0.84rem; color:var(--text-muted);">Irreversibly sanitized text with chosen redaction tokens.</span>
+      <button type="button" class="btn-copy-code" onclick="copyRedactedText()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        <span id="copy-btn-text">Copy Redacted Text</span>
+      </button>
+    </div>
+    <div class="text-viewport" id="redacted-viewport-text">{{ redacted_tagged }}</div>
+  </div>
+
+  <!-- 3. Findings Data Table Panel -->
+  <div class="res-tab-panel" id="panel-table">
+    <div class="table-filter-bar">
+      <input type="text" id="table-search" class="table-search-input" placeholder="Filter findings by type, category, or detected value...">
+      <select id="table-sev-filter" class="table-filter-select">
+        <option value="">All Severities</option>
+        <option value="CRITICAL">Critical Only</option>
+        <option value="HIGH">High Only</option>
+        <option value="MEDIUM">Medium Only</option>
+        <option value="LOW">Low Only</option>
+      </select>
+    </div>
+
+    {% if findings %}
+    <div class="table-responsive">
+      <table class="findings-data-table" id="findings-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Detected Value</th>
+            <th>Severity</th>
+            <th>Confidence</th>
+            <th>Engine</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for f in findings %}
+          <tr data-severity="{{ f.severity }}">
+            <td><strong>{{ f.type }}</strong></td>
+            <td>{{ f.category }}</td>
+            <td><code>{{ f.value }}</code></td>
+            <td>
+              {% set badge_class = 'is-critical bg-critical' if f.severity == 'CRITICAL' else ('is-high bg-high' if f.severity == 'HIGH' else ('is-medium bg-medium' if f.severity == 'MEDIUM' else 'is-low bg-low')) %}
+              <span class="tag-badge {{ badge_class }}">{{ f.severity }}</span>
+            </td>
+            <td>
+              <span style="font-weight:600;">{{ (f.confidence * 100)|round|int }}%</span>
+            </td>
+            <td style="color:var(--text-muted); font-size:0.8rem;">{{ f.source }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p style="text-align:center; padding:30px; color:var(--text-muted);">No sensitive information detected in this document.</p>
+    {% endif %}
+  </div>
+
+  <!-- 4. Side-by-Side Diff Panel -->
+  <div class="res-tab-panel" id="panel-diff">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div>
+        <div style="font-size:0.85rem; font-weight:700; color:var(--text-secondary); margin-bottom:8px;">Original Extracted (Highlighted)</div>
+        <div class="text-viewport" style="max-height:450px;">{{ highlighted|safe }}</div>
+      </div>
+      <div>
+        <div style="font-size:0.85rem; font-weight:700; color:var(--text-secondary); margin-bottom:8px;">Sanitized Output (Redacted)</div>
+        <div class="text-viewport" id="diff-redacted-view" style="max-height:450px;">{{ redacted_tagged }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Explainable AI & Detailed Remediation Guidance -->
+{% if explanations %}
+<section class="explainability-section">
+  <h2>Explainable Security & Remediation Guidance</h2>
+  <div class="explain-cards-grid">
+    {% for ex in explanations %}
+    <div class="explain-item-card sev-{{ ex.severity|lower }}">
+      <div class="explain-head">
+        <strong>{{ ex.type }}</strong>
+        {% set badge_class = 'is-critical bg-critical' if ex.severity == 'CRITICAL' else 'is-high bg-high' %}
+        <span class="tag-badge {{ badge_class }}">{{ ex.severity }}</span>
+      </div>
+      <p style="font-size:0.88rem; color:var(--text-secondary);">{{ ex.reason }}</p>
+      <div class="explain-action">
+        <b>Action Required:</b> {{ ex.recommended_action }}<br>
+        <span style="font-size:0.75rem; color:var(--text-muted);">Method: {{ ex.detection_method }} · Confidence: {{ ex.confidence }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<script>
+  // Pre-calculated redacted texts from server
+  const redactedVariants = {
+    'TAG': {{ redacted_tagged|tojson }},
+    'MASK': {{ redacted_masked|tojson }},
+    'BLOCK': {{ redacted_blocks|tojson }},
+    'MINIMAL': {{ redacted_tagged|tojson }}.replace(/\[REDACTED: [^\]]+\]/g, '[REDACTED]')
+  };
+
+  const resultId = "{{ result_id }}";
+
+  function updateRedactedPreview() {
+    const style = document.getElementById('redact-style-select').value;
+    const text = redactedVariants[style] || redactedVariants['TAG'];
+    document.getElementById('redacted-viewport-text').textContent = text;
+    document.getElementById('diff-redacted-view').textContent = text;
+    
+    // Update download link
+    const downloadBtn = document.getElementById('download-redacted-btn');
+    downloadBtn.href = `/redact/${resultId}?style=${style}`;
+  }
+
+  function switchResultTab(tabName) {
+    const tabs = ['highlight', 'redacted', 'table', 'diff'];
+    tabs.forEach(t => {
+      const btn = document.getElementById(`tab-${t}-btn`);
+      const panel = document.getElementById(`panel-${t}`);
+      if (t === tabName) {
+        btn?.classList.add('active');
+        panel?.classList.add('active');
+      } else {
+        btn?.classList.remove('active');
+        panel?.classList.remove('active');
+      }
+    });
+  }
+
+  function copyRedactedText() {
+    const text = document.getElementById('redacted-viewport-text').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btnText = document.getElementById('copy-btn-text');
+      btnText.textContent = "✓ Copied to Clipboard!";
+      setTimeout(() => { btnText.textContent = "Copy Redacted Text"; }, 2000);
+    });
+  }
+
+  // Live table search & filtering
+  const tableSearch = document.getElementById('table-search');
+  const tableSevFilter = document.getElementById('table-sev-filter');
+  const rows = document.querySelectorAll('#findings-table tbody tr');
+
+  function applyTableFilters() {
+    const query = (tableSearch?.value || '').toLowerCase();
+    const selectedSev = tableSevFilter?.value || '';
+
+    rows.forEach(row => {
+      const rowText = row.textContent.toLowerCase();
+      const rowSev = row.getAttribute('data-severity') || '';
+      const matchesText = rowText.includes(query);
+      const matchesSev = !selectedSev || rowSev === selectedSev;
+      row.style.display = (matchesText && matchesSev) ? '' : 'none';
+    });
+  }
+
+  tableSearch?.addEventListener('input', applyTableFilters);
+  tableSevFilter?.addEventListener('change', applyTableFilters);
+
+  function filterBySeverity(sev) {
+    switchResultTab('table');
+    if (tableSevFilter) {
+      tableSevFilter.value = (tableSevFilter.value === sev) ? '' : sev;
+      applyTableFilters();
+    }
+  }
+</script>
+{% endblock %}

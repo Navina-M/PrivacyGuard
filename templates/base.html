@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}PrivacyGuard Edge — Local DLP & Sensitive Data Redaction{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script>
+    // Prevent theme flash
+    (function() {
+      const saved = localStorage.getItem('pg_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="{{ url_for('index') }}" class="brand" title="PrivacyGuard Edge">
+      <div class="brand-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        PrivacyGuard <span>Edge</span>
+      </div>
+    </a>
+
+    <nav class="nav-links">
+      <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">
+        Scanner
+      </a>
+      <a href="{{ url_for('system_status') }}" class="nav-link {% if request.endpoint == 'system_status' %}active{% endif %}">
+        Diagnostics & Engine
+      </a>
+    </nav>
+
+    <div class="topbar-actions">
+      <div class="privacy-pill" title="Zero cloud dependencies: All processing runs locally inside your edge sandbox">
+        <span class="dot"></span> 100% On-Device Isolation
+      </div>
+      <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Dark / Light Theme" aria-label="Toggle Theme">
+        <span id="theme-icon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for m in messages %}
+          <div class="flash-alert">
+            <span>⚠️ {{ m }}</span>
+            <button onclick="this.parentElement.remove()" style="background:none; border:none; color:inherit; cursor:pointer; font-size:1.1rem;">&times;</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="global-footer">
+    <p><strong>PrivacyGuard Edge</strong> — Universal On-Device Data Loss Prevention (DLP) & High-Accuracy Redaction.</p>
+    <div class="footer-compliance-row">
+      <span class="footer-badge">🛡️ Zero Cloud Telemetry</span>
+      <span class="footer-badge">⚡ Algorithmic Checksums (Luhn & Verhoeff)</span>
+      <span class="footer-badge">📜 DPDP Act 2023 & GDPR Aligned</span>
+      <span class="footer-badge">💳 PCI-DSS Ready</span>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle handler
+    const themeBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    function updateThemeIcon(theme) {
+      if (themeIcon) {
+        themeIcon.textContent = theme === 'light' ? '☀️' : '🌙';
+      }
+    }
+
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    updateThemeIcon(currentTheme);
+
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const active = document.documentElement.getAttribute('data-theme');
+        const next = active === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('pg_theme', next);
+        updateThemeIcon(next);
+      });
+    }
+  </script>
+</body>
+</html>
