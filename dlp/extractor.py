@@ -66,8 +66,8 @@ def _result(
 
 
 def extract_plain_text(path: str, ext: str) -> Dict[str, Any]:
-    """Extract text from plain text, code, json, yaml, sql, log, or config files."""
-    encodings = ["utf-8", "utf-8-sig", "latin-1", "cp1252", "iso-8859-1"]
+    """Extract text from plain text, code, json, yaml, sql, log, or config files with full Unicode and symbol preservation."""
+    encodings = ["utf-8", "utf-8-sig", "utf-16", "utf-16-le", "utf-16-be", "latin-1", "cp1252", "iso-8859-1"]
     content = None
     used_encoding = "utf-8"
 
@@ -81,10 +81,15 @@ def extract_plain_text(path: str, ext: str) -> Dict[str, Any]:
             continue
 
     if content is None:
-        # Fallback to binary string extraction
+        # Fallback to binary string extraction with Unicode preservation
         with open(path, "rb") as f:
             raw = f.read()
-        content = re.sub(r"[^\x20-\x7E\n\r\t]", " ", raw.decode("latin-1", errors="ignore"))
+        try:
+            content = raw.decode("utf-8", errors="replace")
+        except Exception:
+            content = raw.decode("latin-1", errors="ignore")
+        # Remove nulls and unprintable control chars while strictly preserving all unicode symbols and emojis
+        content = "".join(ch for ch in content if ch in ("\n", "\r", "\t") or (ord(ch) >= 32 and ord(ch) != 127))
 
     return _result(
         content,
@@ -326,8 +331,49 @@ def _configure_tesseract(pytesseract):
                 break
 
 
+def _preprocess_image_for_ocr(img):
+    """
+    Optimize image clarity, contrast, and resolution for superior OCR accuracy.
+    Enables accurate detection of small icons, symbols, and fine print.
+    """
+    try:
+        from PIL import Image, ImageEnhance, ImageOps
+
+        # Handle alpha channels / transparency
+        if img.mode in ("RGBA", "LA", "P"):
+            bg = Image.new("RGB", img.size, (255, 255, 255))
+            if img.mode == "P":
+                img = img.convert("RGBA")
+            bg.paste(img, mask=img.split()[-1] if img.mode in ("RGBA", "LA") else None)
+            img = bg
+        elif img.mode != "RGB":
+            img = img.convert("RGB")
+
+        # Upscale if image is low resolution (< 1200px)
+        w, h = img.size
+        if w < 1200 or h < 1200:
+            scale = min(3.0, max(1.5, 1800.0 / max(w, h, 1)))
+            new_w, new_h = int(w * scale), int(h * scale)
+            resample_filter = getattr(Image, "Resampling", Image).LANCZOS if hasattr(getattr(Image, "Resampling", Image), "LANCZOS") else Image.BICUBIC
+            img = img.resize((new_w, new_h), resample=resample_filter)
+
+        # Grayscale conversion
+        gray = ImageOps.grayscale(img)
+
+        # Contrast and sharpness boost
+        enhancer = ImageEnhance.Contrast(gray)
+        enhanced = enhancer.enhance(1.8)
+        sharpener = ImageEnhance.Sharpness(enhanced)
+        return sharpener.enhance(1.4)
+    except Exception:
+        return img
+
+
 def extract_image_text(path: str) -> Dict[str, Any]:
-    """OCR an image file using pytesseract."""
+    """
+    Advanced OCR engine with multi-pass image preprocessing,
+    symbol preservation, and high-fidelity text recognition.
+    """
     try:
         import pytesseract
         from PIL import Image
@@ -339,11 +385,27 @@ def extract_image_text(path: str) -> Dict[str, Any]:
 
     try:
         _configure_tesseract(pytesseract)
-        img = Image.open(path)
-        text = pytesseract.image_to_string(img)
+        orig_img = Image.open(path)
+
+        # 1. First pass: Preprocessed high-contrast image with standard layout analysis
+        processed_img = _preprocess_image_for_ocr(orig_img)
+        custom_config = r"--oem 3 --psm 3 -c preserve_interword_spaces=1"
+        text = pytesseract.image_to_string(processed_img, config=custom_config)
+
+        # 2. If first pass extracted little or no text, fallback to sparse text PSM 6 or original image
+        if len(text.strip()) < 10:
+            try:
+                fallback_config = r"--oem 3 --psm 6 -c preserve_interword_spaces=1"
+                text_fallback = pytesseract.image_to_string(orig_img, config=fallback_config)
+                if len(text_fallback.strip()) > len(text.strip()):
+                    text = text_fallback
+            except Exception:
+                pass
+
         return _result(text, "image", ocr_used=True)
     except Exception as e:
         return _result("", "image", ocr_used=False, note=f"OCR processing note: {e}")
+
 
 
 def extract_text(path: str) -> Dict[str, Any]:

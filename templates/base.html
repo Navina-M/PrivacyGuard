@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}PrivacyGuard Edge — Local DLP & Sensitive Data Redaction{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <script>
-    // Prevent theme flash
+    // Prevent theme flash - default is clean white light mode
     (function() {
-      const saved = localStorage.getItem('pg_theme') || 'dark';
+      const saved = localStorage.getItem('pg_theme') || 'light';
       document.documentElement.setAttribute('data-theme', saved);
     })();
   </script>
 </head>
+
 <body>
   <header class="topbar">
     <a href="{{ url_for('index') }}" class="brand" title="PrivacyGuard Edge">
@@ -83,7 +84,7 @@
       }
     }
 
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
     updateThemeIcon(currentTheme);
 
     if (themeBtn) {

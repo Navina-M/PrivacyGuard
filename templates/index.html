@@ -18,17 +18,17 @@
 
 <!-- Supported File Formats Strip -->
 <div class="formats-strip">
-  <span style="font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-right:6px;">Universal Compatibility:</span>
-  <span class="format-chip">PDF</span>
-  <span class="format-chip">DOCX</span>
-  <span class="format-chip">XLSX / CSV</span>
-  <span class="format-chip">PPTX</span>
-  <span class="format-chip">JSON / YAML</span>
-  <span class="format-chip">LOG / SQL</span>
-  <span class="format-chip">CODE (PY, JS, TS, GO, C)</span>
-  <span class="format-chip">IMAGE / OCR</span>
-  <span class="format-chip">ZIP / TAR ARCHIVES</span>
-  <span class="format-chip" style="border-color:var(--brand-primary); color:var(--brand-primary);">Up to {{ max_mb }} MB</span>
+  <span class="formats-label">Universal Compatibility:</span>
+  <span class="format-chip chip-pdf">PDF</span>
+  <span class="format-chip chip-docx">DOCX</span>
+  <span class="format-chip chip-data">XLSX / CSV</span>
+  <span class="format-chip chip-slide">PPTX</span>
+  <span class="format-chip chip-json">JSON / YAML</span>
+  <span class="format-chip chip-log">LOG / SQL</span>
+  <span class="format-chip chip-code">CODE (PY, JS, TS, GO, C)</span>
+  <span class="format-chip chip-ocr">IMAGE / OCR</span>
+  <span class="format-chip chip-archive">ZIP / TAR ARCHIVES</span>
+  <span class="format-chip chip-limit">Up to {{ max_mb }} MB</span>
 </div>
 
 <!-- Multi-Mode Scanner Card -->
@@ -61,7 +61,7 @@
         <label for="document" class="dropzone-container" id="dropzone">
           <input type="file" id="document" name="document">
           <div class="dz-icon-circle">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
               <polyline points="17 8 12 3 7 8"/>
               <line x1="12" y1="3" x2="12" y2="15"/>
@@ -85,12 +85,13 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
             </svg>
-            Quick Test Presets (Click to load sample):
+            Quick Test Presets (Click to load sample data):
           </div>
           <div class="presets-grid">
             {% for key, sample in presets.items() %}
               <button type="button" class="preset-btn" onclick="loadPreset('{{ key }}')">
-                <span>📄</span> {{ sample.title }}
+                <span class="preset-icon">📄</span>
+                <span class="preset-title">{{ sample.title }}</span>
               </button>
             {% endfor %}
           </div>
@@ -111,52 +112,81 @@
 </section>
 
 <!-- Detection Categories Grid -->
-<h2 class="category-headline">Comprehensive Detection & Checksum Engine</h2>
+<div class="category-section-header">
+  <div class="category-badge">Engine Capabilities</div>
+  <h2 class="category-headline">Comprehensive Detection & Checksum Engine</h2>
+  <p class="category-sub">Multi-layer verification using regular expressions, algorithmic checksums, and heuristic models.</p>
+</div>
+
 <div class="category-grid">
-  <div class="category-card">
+  <!-- 1. Financial -->
+  <div class="category-card cat-card-financial">
     <div class="cat-header">
-      <span class="cat-icon">💳</span>
-      <h3>Financial Data & Cards</h3>
+      <div class="cat-icon-wrap cat-icon-financial">💳</div>
+      <div>
+        <h3>Financial Data & Cards</h3>
+        <span class="cat-tag tag-blue">PCI-DSS Compliant</span>
+      </div>
     </div>
     <p>Credit/Debit cards with <strong>Luhn Algorithm</strong> verification, Bank Accounts, IFSC codes, UPI IDs, SWIFT/BIC, IBAN, and compensation details.</p>
   </div>
 
-  <div class="category-card">
+  <!-- 2. Government Identifiers -->
+  <div class="category-card cat-card-gov">
     <div class="cat-header">
-      <span class="cat-icon">🪪</span>
-      <h3>Government Identifiers</h3>
+      <div class="cat-icon-wrap cat-icon-gov">🪪</div>
+      <div>
+        <h3>Government Identifiers</h3>
+        <span class="cat-tag tag-purple">Verhoeff Checksum</span>
+      </div>
     </div>
     <p>Indian Aadhaar (with <strong>Verhoeff checksum</strong>), PAN Card (entity structure check), Passports, Voter ID (EPIC), Driving Licence, and US SSN.</p>
   </div>
 
-  <div class="category-card">
+  <!-- 3. Credentials & Cloud Secrets -->
+  <div class="category-card cat-card-secrets">
     <div class="cat-header">
-      <span class="cat-icon">🔑</span>
-      <h3>Credentials & Cloud Secrets</h3>
+      <div class="cat-icon-wrap cat-icon-secrets">🔑</div>
+      <div>
+        <h3>Credentials & Cloud Secrets</h3>
+        <span class="cat-tag tag-rose">High Risk</span>
+      </div>
     </div>
     <p>AWS Keys (Access & Secret), OpenAI API keys, GitHub PATs, Google Cloud keys, Slack tokens, Stripe keys, Database URIs, JWTs, and Private Keys.</p>
   </div>
 
-  <div class="category-card">
+  <!-- 4. Personal Information -->
+  <div class="category-card cat-card-pii">
     <div class="cat-header">
-      <span class="cat-icon">👤</span>
-      <h3>Personal Information (PII)</h3>
+      <div class="cat-icon-wrap cat-icon-pii">👤</div>
+      <div>
+        <h3>Personal Information (PII)</h3>
+        <span class="cat-tag tag-emerald">DPDP / GDPR</span>
+      </div>
     </div>
     <p>Email addresses, phone numbers (+91 mobile and international E.164), Dates of Birth, postal PIN/Zip codes, and Named Entity Recognition.</p>
   </div>
 
-  <div class="category-card">
+  <!-- 5. Health & Medical -->
+  <div class="category-card cat-card-health">
     <div class="cat-header">
-      <span class="cat-icon">🏥</span>
-      <h3>Health & Medical Data</h3>
+      <div class="cat-icon-wrap cat-icon-health">🏥</div>
+      <div>
+        <h3>Health & Medical Data</h3>
+        <span class="cat-tag tag-amber">HIPAA Protected</span>
+      </div>
     </div>
     <p>Patient Medical Record Numbers (MRN), prescription identifiers, and blood groups aligned with HIPAA & health privacy standards.</p>
   </div>
 
-  <div class="category-card">
+  <!-- 6. Network & Infrastructure -->
+  <div class="category-card cat-card-network">
     <div class="cat-header">
-      <span class="cat-icon">🌐</span>
-      <h3>Network & Infrastructure</h3>
+      <div class="cat-icon-wrap cat-icon-network">🌐</div>
+      <div>
+        <h3>Network & Infrastructure</h3>
+        <span class="cat-tag tag-cyan">Infra Security</span>
+      </div>
     </div>
     <p>IPv4/IPv6 addresses, internal endpoints, hardware MAC addresses, and web URLs embedded across configuration logs.</p>
   </div>

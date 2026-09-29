@@ -12,11 +12,11 @@
       Scan Completed Locally
     </div>
     <h1>{{ filename }}</h1>
-    <div style="font-size:0.84rem; color:var(--text-muted); margin-top:4px;">
-      Format: <strong>{{ extraction.source_type|upper }}</strong> · 
-      Characters: <strong>{{ extraction.char_count }}</strong> · 
-      Words: <strong>{{ extraction.word_count }}</strong> · 
-      Findings: <strong>{{ findings|length }}</strong>
+    <div class="results-meta-stats">
+      <span class="meta-badge format-badge">Format: <strong>{{ extraction.source_type|upper }}</strong></span>
+      <span class="meta-badge">Chars: <strong>{{ extraction.char_count }}</strong></span>
+      <span class="meta-badge">Words: <strong>{{ extraction.word_count }}</strong></span>
+      <span class="meta-badge findings-count-badge">Findings: <strong>{{ findings|length }}</strong></span>
     </div>
   </div>
 
@@ -27,7 +27,7 @@
         <polyline points="7 10 12 15 17 10"/>
         <line x1="12" y1="15" x2="12" y2="3"/>
       </svg>
-      Download Redacted Text
+      Download Sanitized Text
     </a>
 
     <a href="{{ url_for('report', result_id=result_id) }}" class="btn-action primary">
@@ -40,18 +40,18 @@
       Download PDF Audit Report
     </a>
 
-    <a href="{{ url_for('export_json', result_id=result_id) }}" target="_blank" class="btn-action secondary" title="Export raw JSON findings">
+    <a href="{{ url_for('export_json', result_id=result_id) }}" target="_blank" class="btn-action secondary export-chip" title="Export raw JSON findings">
       JSON
     </a>
 
-    <a href="{{ url_for('export_csv', result_id=result_id) }}" class="btn-action secondary" title="Export findings to CSV">
+    <a href="{{ url_for('export_csv', result_id=result_id) }}" class="btn-action secondary export-chip" title="Export findings to CSV">
       CSV
     </a>
   </div>
 </div>
 
 {% if extraction.note %}
-<div class="flash-alert" style="background:var(--bg-surface-raised); border-color:var(--border-strong); color:var(--text-secondary); margin-bottom:18px;">
+<div class="flash-alert flash-info">
   <span>ℹ️ <strong>Extraction Note:</strong> {{ extraction.note }}</span>
 </div>
 {% endif %}
@@ -82,13 +82,13 @@
   <div class="risk-guidance-col">
     {% set lvl_class = 'is-critical bg-critical' if assessment.level == 'CRITICAL' else ('is-high bg-high' if assessment.level == 'HIGH' else ('is-medium bg-medium' if assessment.level == 'MEDIUM' else 'is-low bg-low')) %}
     <span class="level-badge-large {{ lvl_class }}">
-      {{ assessment.level }} RISK LEVEL
+      <span class="level-dot"></span> {{ assessment.level }} RISK EVALUATION
     </span>
     <p class="risk-recs-text">{{ assessment.recommendation }}</p>
 
     {% if assessment.compliance_impacts %}
     <div class="compliance-tags">
-      <span style="font-size:0.75rem; font-weight:600; color:var(--text-muted);">Impacted Regulations:</span>
+      <span class="comp-label">Impacted Regulations:</span>
       {% for reg in assessment.compliance_impacts %}
         <span class="comp-badge">{{ reg }}</span>
       {% endfor %}
@@ -98,7 +98,7 @@
 
   <!-- Key Risk Factors -->
   <div class="risk-reasons-col">
-    <h3>Identified Risk Factors</h3>
+    <h3>Identified Risk Triggers</h3>
     <ul>
       {% for r in assessment.reasons %}
         <li>{{ r }}</li>
@@ -109,20 +109,32 @@
 
 <!-- Severity Summary Chips (Click to filter table) -->
 <section class="severity-summary-bar">
-  <div class="sev-stat-card is-critical bg-critical" onclick="filterBySeverity('CRITICAL')">
-    <span class="sev-stat-name">Critical Risk</span>
+  <div class="sev-stat-card sev-card-critical is-critical bg-critical" onclick="filterBySeverity('CRITICAL')">
+    <div class="sev-stat-info">
+      <span class="sev-stat-name">Critical Risk</span>
+      <span class="sev-stat-sub">Immediate redaction required</span>
+    </div>
     <span class="sev-stat-count">{{ assessment.counts_by_severity.CRITICAL }}</span>
   </div>
-  <div class="sev-stat-card is-high bg-high" onclick="filterBySeverity('HIGH')">
-    <span class="sev-stat-name">High Risk</span>
+  <div class="sev-stat-card sev-card-high is-high bg-high" onclick="filterBySeverity('HIGH')">
+    <div class="sev-stat-info">
+      <span class="sev-stat-name">High Risk</span>
+      <span class="sev-stat-sub">Sensitive credentials & PII</span>
+    </div>
     <span class="sev-stat-count">{{ assessment.counts_by_severity.HIGH }}</span>
   </div>
-  <div class="sev-stat-card is-medium bg-medium" onclick="filterBySeverity('MEDIUM')">
-    <span class="sev-stat-name">Medium Risk</span>
+  <div class="sev-stat-card sev-card-medium is-medium bg-medium" onclick="filterBySeverity('MEDIUM')">
+    <div class="sev-stat-info">
+      <span class="sev-stat-name">Medium Risk</span>
+      <span class="sev-stat-sub">Personal identity tokens</span>
+    </div>
     <span class="sev-stat-count">{{ assessment.counts_by_severity.MEDIUM }}</span>
   </div>
-  <div class="sev-stat-card is-low bg-low" onclick="filterBySeverity('LOW')">
-    <span class="sev-stat-name">Low Risk</span>
+  <div class="sev-stat-card sev-card-low is-low bg-low" onclick="filterBySeverity('LOW')">
+    <div class="sev-stat-info">
+      <span class="sev-stat-name">Low Risk</span>
+      <span class="sev-stat-sub">Telemetry & metadata</span>
+    </div>
     <span class="sev-stat-count">{{ assessment.counts_by_severity.LOW }}</span>
   </div>
 </section>
@@ -146,12 +158,12 @@
 
   <!-- Redaction Style Switcher -->
   <div class="redaction-controls" id="redaction-controls-box">
-    <label for="redact-style-select">Redaction Mode:</label>
+    <label for="redact-style-select">Redaction Style:</label>
     <select id="redact-style-select" class="style-select" onchange="updateRedactedPreview()">
-      <option value="TAG" selected>Typed Labels [REDACTED: EMAIL]</option>
-      <option value="MASK">Masking (••••••••)</option>
+      <option value="TAG" selected>Typed Badges [REDACTED: EMAIL]</option>
+      <option value="MASK">Masking Pattern (••••••••)</option>
       <option value="BLOCK">Blackout Blocks (████████)</option>
-      <option value="MINIMAL">Minimal [REDACTED]</option>
+      <option value="MINIMAL">Standard [REDACTED]</option>
     </select>
   </div>
 </div>
@@ -161,12 +173,12 @@
   <!-- 1. Highlighted Text Panel -->
   <div class="res-tab-panel active" id="panel-highlight">
     <div class="viewport-top-actions">
-      <span style="font-size:0.84rem; color:var(--text-muted);">Hover over any highlighted text badge to view detection details and confidence.</span>
-      <div style="display:flex; gap:10px; font-size:0.78rem; color:var(--text-muted);">
-        <span><mark class="hl-critical" style="padding:0 4px; font-size:0.75rem;">Critical</mark></span>
-        <span><mark class="hl-high" style="padding:0 4px; font-size:0.75rem;">High</mark></span>
-        <span><mark class="hl-medium" style="padding:0 4px; font-size:0.75rem;">Medium</mark></span>
-        <span><mark class="hl-low" style="padding:0 4px; font-size:0.75rem;">Low</mark></span>
+      <span class="viewport-hint">Hover over highlighted entities for detection method & checksum validation.</span>
+      <div class="legend-pills">
+        <span class="legend-pill is-critical"><span class="legend-dot"></span> Critical</span>
+        <span class="legend-pill is-high"><span class="legend-dot"></span> High</span>
+        <span class="legend-pill is-medium"><span class="legend-dot"></span> Medium</span>
+        <span class="legend-pill is-low"><span class="legend-dot"></span> Low</span>
       </div>
     </div>
     <div class="text-viewport">
@@ -177,13 +189,13 @@
   <!-- 2. Live Redacted Preview Panel -->
   <div class="res-tab-panel" id="panel-redacted">
     <div class="viewport-top-actions">
-      <span style="font-size:0.84rem; color:var(--text-muted);">Irreversibly sanitized text with chosen redaction tokens.</span>
+      <span class="viewport-hint">Irreversibly sanitized text formatted for safe export or AI prompting.</span>
       <button type="button" class="btn-copy-code" onclick="copyRedactedText()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
           <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
         </svg>
-        <span id="copy-btn-text">Copy Redacted Text</span>
+        <span id="copy-btn-text">Copy Sanitized Text</span>
       </button>
     </div>
     <div class="text-viewport" id="redacted-viewport-text">{{ redacted_tagged }}</div>
@@ -192,9 +204,9 @@
   <!-- 3. Findings Data Table Panel -->
   <div class="res-tab-panel" id="panel-table">
     <div class="table-filter-bar">
-      <input type="text" id="table-search" class="table-search-input" placeholder="Filter findings by type, category, or detected value...">
+      <input type="text" id="table-search" class="table-search-input" placeholder="Search findings by type, category, or sensitive snippet...">
       <select id="table-sev-filter" class="table-filter-select">
-        <option value="">All Severities</option>
+        <option value="">All Risk Severities</option>
         <option value="CRITICAL">Critical Only</option>
         <option value="HIGH">High Only</option>
         <option value="MEDIUM">Medium Only</option>
@@ -207,48 +219,67 @@
       <table class="findings-data-table" id="findings-table">
         <thead>
           <tr>
-            <th>Type</th>
+            <th>Detected Entity Type</th>
             <th>Category</th>
-            <th>Detected Value</th>
-            <th>Severity</th>
+            <th>Detected Content Value</th>
+            <th>Risk Severity</th>
             <th>Confidence</th>
-            <th>Engine</th>
+            <th>Detection Method</th>
           </tr>
         </thead>
         <tbody>
           {% for f in findings %}
           <tr data-severity="{{ f.severity }}">
-            <td><strong>{{ f.type }}</strong></td>
-            <td>{{ f.category }}</td>
-            <td><code>{{ f.value }}</code></td>
+            <td>
+              <strong class="entity-type-text">{{ f.type }}</strong>
+            </td>
+            <td>
+              <span class="category-pill">{{ f.category }}</span>
+            </td>
+            <td>
+              <code class="val-pill">{{ f.value }}</code>
+            </td>
             <td>
               {% set badge_class = 'is-critical bg-critical' if f.severity == 'CRITICAL' else ('is-high bg-high' if f.severity == 'HIGH' else ('is-medium bg-medium' if f.severity == 'MEDIUM' else 'is-low bg-low')) %}
               <span class="tag-badge {{ badge_class }}">{{ f.severity }}</span>
             </td>
             <td>
-              <span style="font-weight:600;">{{ (f.confidence * 100)|round|int }}%</span>
+              <div class="confidence-bar-wrap">
+                <div class="confidence-bar">
+                  <div class="confidence-fill" style="width: {{ (f.confidence * 100)|round|int }}%;"></div>
+                </div>
+                <span class="confidence-val">{{ (f.confidence * 100)|round|int }}%</span>
+              </div>
             </td>
-            <td style="color:var(--text-muted); font-size:0.8rem;">{{ f.source }}</td>
+            <td class="engine-cell">{{ f.source }}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
     {% else %}
-    <p style="text-align:center; padding:30px; color:var(--text-muted);">No sensitive information detected in this document.</p>
+    <div class="empty-state-card">
+      <span class="empty-icon">🛡️</span>
+      <h3>Zero Sensitive Patterns Detected</h3>
+      <p>This file was scanned across all regex and AI patterns with zero policy violations found.</p>
+    </div>
     {% endif %}
   </div>
 
   <!-- 4. Side-by-Side Diff Panel -->
   <div class="res-tab-panel" id="panel-diff">
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-      <div>
-        <div style="font-size:0.85rem; font-weight:700; color:var(--text-secondary); margin-bottom:8px;">Original Extracted (Highlighted)</div>
-        <div class="text-viewport" style="max-height:450px;">{{ highlighted|safe }}</div>
+    <div class="diff-grid">
+      <div class="diff-col">
+        <div class="diff-header diff-head-orig">
+          <span>Original Extracted Content (Highlighted)</span>
+        </div>
+        <div class="text-viewport diff-viewport">{{ highlighted|safe }}</div>
       </div>
-      <div>
-        <div style="font-size:0.85rem; font-weight:700; color:var(--text-secondary); margin-bottom:8px;">Sanitized Output (Redacted)</div>
-        <div class="text-viewport" id="diff-redacted-view" style="max-height:450px;">{{ redacted_tagged }}</div>
+      <div class="diff-col">
+        <div class="diff-header diff-head-redact">
+          <span>Sanitized Output (Clean & Redacted)</span>
+        </div>
+        <div class="text-viewport diff-viewport" id="diff-redacted-view">{{ redacted_tagged }}</div>
       </div>
     </div>
   </div>
@@ -257,19 +288,31 @@
 <!-- Explainable AI & Detailed Remediation Guidance -->
 {% if explanations %}
 <section class="explainability-section">
-  <h2>Explainable Security & Remediation Guidance</h2>
+  <div class="explain-title-row">
+    <div>
+      <h2>Explainable DLP & Remediation Guidance</h2>
+      <p class="explain-sub">Specific regulatory impact and immediate remediation steps for detected findings.</p>
+    </div>
+  </div>
   <div class="explain-cards-grid">
     {% for ex in explanations %}
     <div class="explain-item-card sev-{{ ex.severity|lower }}">
       <div class="explain-head">
-        <strong>{{ ex.type }}</strong>
+        <div class="explain-title-group">
+          <strong>{{ ex.type }}</strong>
+          <span class="explain-cat-badge">{{ ex.severity }}</span>
+        </div>
         {% set badge_class = 'is-critical bg-critical' if ex.severity == 'CRITICAL' else 'is-high bg-high' %}
         <span class="tag-badge {{ badge_class }}">{{ ex.severity }}</span>
       </div>
-      <p style="font-size:0.88rem; color:var(--text-secondary);">{{ ex.reason }}</p>
+      <p class="explain-reason">{{ ex.reason }}</p>
       <div class="explain-action">
-        <b>Action Required:</b> {{ ex.recommended_action }}<br>
-        <span style="font-size:0.75rem; color:var(--text-muted);">Method: {{ ex.detection_method }} · Confidence: {{ ex.confidence }}</span>
+        <div class="action-label">Recommended Action:</div>
+        <div class="action-body">{{ ex.recommended_action }}</div>
+        <div class="action-meta">
+          <span>Method: <strong>{{ ex.detection_method }}</strong></span>
+          <span>Confidence: <strong>{{ ex.confidence }}</strong></span>
+        </div>
       </div>
     </div>
     {% endfor %}
@@ -296,7 +339,9 @@
     
     // Update download link
     const downloadBtn = document.getElementById('download-redacted-btn');
-    downloadBtn.href = `/redact/${resultId}?style=${style}`;
+    if (downloadBtn) {
+      downloadBtn.href = `/redact/${resultId}?style=${style}`;
+    }
   }
 
   function switchResultTab(tabName) {
@@ -319,7 +364,7 @@
     navigator.clipboard.writeText(text).then(() => {
       const btnText = document.getElementById('copy-btn-text');
       btnText.textContent = "✓ Copied to Clipboard!";
-      setTimeout(() => { btnText.textContent = "Copy Redacted Text"; }, 2000);
+      setTimeout(() => { btnText.textContent = "Copy Sanitized Text"; }, 2000);
     });
   }
 

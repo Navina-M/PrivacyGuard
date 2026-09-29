@@ -27,49 +27,49 @@ PATTERNS = [
     # ---------------- Government Identifiers ----------------
     (
         "AADHAAR",
-        r"\b[2-9]\d{3}\s?\d{4}\s?\d{4}\b",
+        r"(?i)(?:(?:🆔|🪪|\[aadhaar\]|\[uid\]|aadhaar|aadhar|uidai|uid)\s*[:\-]?\s*)?\b[2-9]\d{3}\s?\d{4}\s?\d{4}\b",
         "Government Identifier",
         "HIGH",
         "Indian 12-digit Unique Identification Number (Aadhaar)",
     ),
     (
         "PAN",
-        r"\b[A-Z]{5}[0-9]{4}[A-Z]\b",
+        r"(?i)(?:(?:pan|pan\s*card|pan\s*no|pan\s*number)\s*[:\-]?\s*)?\b[A-Z]{5}[0-9]{4}[A-Z]\b",
         "Government Identifier",
         "HIGH",
         "Indian Permanent Account Number (Income Tax PAN)",
     ),
     (
         "PASSPORT_IN",
-        r"\b[A-PR-WYa-pr-wy][1-9]\d\s?\d{4}[1-9]\b",
+        r"(?i)(?:(?:🛂|passport|passport\s*no|passport\s*number)\s*[:\-]?\s*)?\b[A-PR-WYa-pr-wy][1-9]\d\s?\d{4}[1-9]\b",
         "Government Identifier",
         "HIGH",
         "Indian Passport Number",
     ),
     (
         "PASSPORT_GLOBAL",
-        r"(?i)\bpassport\s*(?:no|num|number|#)?\s*[:\-]?\s*([A-Z0-9]{6,10})\b",
+        r"(?i)\b(?:🛂|passport)\s*(?:no|num|number|#)?\s*[:\-]?\s*([A-Z0-9]{6,10})\b",
         "Government Identifier",
         "HIGH",
         "International Passport Identifier",
     ),
     (
         "VOTER_ID_IN",
-        r"\b[A-Z]{3}[0-9]{7}\b",
+        r"(?i)(?:(?:epic|voter\s*id|voter\s*card|election\s*card)\s*[:\-]?\s*)?\b[A-Z]{3}[0-9]{7}\b",
         "Government Identifier",
         "HIGH",
         "Indian Voter ID Card (EPIC)",
     ),
     (
         "DRIVING_LICENSE_IN",
-        r"\b[A-Z]{2}[0-9]{2}\s?[0-9]{11}\b",
+        r"(?i)(?:(?:dl|driving\s*licen[cs]e|licen[cs]e\s*no)\s*[:\-]?\s*)?\b[A-Z]{2}[0-9]{2}\s?[0-9]{11}\b",
         "Government Identifier",
         "HIGH",
         "Indian Driving Licence Number",
     ),
     (
         "US_SSN",
-        r"\b(?!000|666|9\d{2})\d{3}-(?!00)\d{2}-(?!0000)\d{4}\b",
+        r"(?i)(?:(?:ssn|social\s*security)\s*[:\-]?\s*)?\b(?!000|666|9\d{2})\d{3}-(?!00)\d{2}-(?!0000)\d{4}\b",
         "Government Identifier",
         "CRITICAL",
         "United States Social Security Number (SSN)",
@@ -85,7 +85,7 @@ PATTERNS = [
     # ---------------- Financial Information ----------------
     (
         "CREDIT_CARD",
-        r"\b(?:\d[ -]*?){13,19}\b",
+        r"(?i)(?:(?:💳|🪙|\[card\]|\(card\)|(?:card|credit|debit|visa|mastercard|rupay|amex)\s*(?:no|num|number|#)?\s*[:\-]?\s*))?\b(?:\d[ -]*?){13,19}\b",
         "Financial Information",
         "CRITICAL",
         "Payment Card Number (Visa, Mastercard, Amex, RuPay, Discover)",
@@ -99,14 +99,14 @@ PATTERNS = [
     ),
     (
         "IFSC",
-        r"\b[A-Z]{4}0[A-Z0-9]{6}\b",
+        r"(?i)(?:(?:ifsc|ifsc\s*code)\s*[:\-]?\s*)?\b[A-Z]{4}0[A-Z0-9]{6}\b",
         "Financial Information",
         "HIGH",
         "Indian Financial System Code (IFSC)",
     ),
     (
         "SWIFT_BIC",
-        r"\b[A-Z]{6}[A-Z0-9]{2}(?:[A-Z0-9]{3})?\b",
+        r"\b[A-Z]{4}(?:AD|AE|AF|AG|AI|AL|AM|AO|AQ|AR|AS|AT|AU|AW|AX|AZ|BA|BB|BD|BE|BF|BG|BH|BI|BJ|BL|BM|BN|BO|BQ|BR|BS|BT|BV|BW|BY|BZ|CA|CC|CD|CF|CG|CH|CI|CK|CL|CM|CN|CO|CR|CU|CV|CW|CX|CY|CZ|DE|DJ|DK|DM|DO|DZ|EC|EE|EG|EH|ER|ES|ET|FI|FJ|FK|FM|FO|FR|GA|GB|GD|GE|GF|GG|GH|GI|GL|GM|GN|GP|GQ|GR|GS|GT|GU|GW|GY|HK|HM|HN|HR|HT|HU|ID|IE|IL|IM|IN|IO|IQ|IR|IS|IT|JE|JM|JO|JP|KE|KG|KH|KI|KM|KN|KP|KR|KW|KY|KZ|LA|LB|LC|LI|LK|LR|LS|LT|LU|LV|LY|MA|MC|MD|ME|MF|MG|MH|MK|ML|MM|MN|MO|MP|MQ|MR|MS|MT|MU|MV|MW|MX|MY|MZ|NA|NC|NE|NF|NG|NI|NL|NO|NP|NR|NU|NZ|OM|PA|PE|PF|PG|PH|PK|PL|PM|PN|PR|PS|PT|PW|PY|QA|RE|RO|RS|RU|RW|SA|SB|SC|SD|SE|SG|SH|SI|SJ|SK|SL|SM|SN|SO|SR|SS|ST|SV|SX|SY|SZ|TC|TD|TF|TG|TH|TJ|TK|TL|TM|TN|TO|TR|TT|TV|TW|TZ|UA|UG|UM|US|UY|UZ|VA|VC|VE|VG|VI|VN|VU|WF|WS|YE|YT|ZA|ZM|ZW)[A-Z0-9]{2}(?:[A-Z0-9]{3})?\b",
         "Financial Information",
         "HIGH",
         "SWIFT / BIC Bank Routing Code",
@@ -120,7 +120,7 @@ PATTERNS = [
     ),
     (
         "UPI_ID",
-        r"\b[a-zA-Z0-9.\-_]{2,256}@(?!gmail|yahoo|outlook|hotmail|icloud|proton|live)[a-zA-Z]{2,64}\b",
+        r"\b[a-zA-Z0-9.\-_]{2,256}@(?!gmail|yahoo|outlook|hotmail|icloud|proton|live|test|example)[a-zA-Z]{2,64}\b",
         "Financial Information",
         "MEDIUM",
         "Unified Payments Interface (UPI VPA)",
@@ -134,7 +134,7 @@ PATTERNS = [
     ),
     (
         "SALARY_MENTION",
-        r"(?i)\b(?:salary|ctc|remuneration|compensation|take[- ]home|stipend)\s*[:\-]?\s*(?:rs\.?|inr|₹|\$|€|£)?\s*[\d,]+(?:\.\d+)?(?:\s*(?:lpa|k|lakhs?|cr|crores?|p\.a\.|per annum|usd|inr))?\b",
+        r"(?i)(?:(?:(?:💰|💵|💸|₹|\$|€|£|¥|\[salary\]|(?:salary|ctc|remuneration|compensation|take[- ]home|stipend|wage|pay))\s*[:\-]?\s*(?:rs\.?|inr|₹|\$|€|£|¥)?\s*[\d,]+(?:\.\d+)?(?:\s*(?:lpa|k|lakhs?|cr|crores?|p\.a\.|per annum|usd|inr|eur|gbp|monthly|annual|annum))?|(?:rs\.?|inr|₹|\$|€|£|¥)\s*[\d,]+(?:\.\d+)?\s*(?:lpa|k|lakhs?|cr|crores?|p\.a\.|per annum)))\b",
         "Financial Information",
         "MEDIUM",
         "Salary or Compensation Figure",
@@ -150,7 +150,7 @@ PATTERNS = [
     # ---------------- Credentials & Secrets ----------------
     (
         "PASSWORD_FIELD",
-        r"(?i)\b(?:password|passwd|pwd|db_pass|secret_key|master_key)\s*[:=]\s*[\"']?([^\s\"';]{3,})[\"']?",
+        r"(?i)(?:(?:🔒|🔑|🗝️|\[password\]|\(pwd\)|(?:password|passwd|pwd|db_pass|secret_key|master_key))\s*[:=]\s*[\"']?([^\s\"';]{3,})[\"']?)",
         "Credentials",
         "CRITICAL",
         "Plaintext Password or Secret Assignment",
@@ -243,42 +243,42 @@ PATTERNS = [
     # ---------------- Personal Information (PII) ----------------
     (
         "EMAIL",
-        r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
+        r"(?i)(?:(?:✉️|📧|📨|📩|\[email\]|\(email\)|\(e\)|\(mail\)|(?:email|mail|e-mail))\s*[:\-]?\s*)?[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
         "Personal Information",
         "MEDIUM",
         "Electronic Mail Address",
     ),
     (
         "PHONE_IN",
-        r"(?<!\d)(?:\+91[\-\s]?)?[6-9]\d{9}(?!\d)",
+        r"(?i)(?:(?:📞|📱|☎️|📲|✆|℡|\[phone\]|\(tel\)|\(mob\)|\(ph\)|\(cell\)|(?:phone|mobile|tel|cell|call|contact|emergency))\s*[:\-]?\s*)?(?<!\d)(?:\+91[\-\s]?)?[6-9]\d{9}(?!\d)",
         "Personal Information",
         "MEDIUM",
         "Indian Mobile / Telephone Number",
     ),
     (
         "PHONE_INTL",
-        r"\+(?:[1-9]\d{0,2})[\s\-\.]?(?:\(?\d{2,4}\)?[\s\-\.]?)?\d{3,4}[\s\-\.]?\d{3,4}\b",
+        r"(?i)(?:(?:📞|📱|☎️|📲|✆|℡|\[phone\]|\(tel\)|\(mob\)|\(ph\)|\(cell\)|(?:phone|mobile|tel|cell|call|contact|emergency))\s*[:\-]?\s*)?\+(?:[1-9]\d{0,2})[\s\-\.]?(?:\(?\d{2,4}\)?[\s\-\.]?)?\d{3,4}[\s\-\.]?\d{3,4}\b",
         "Personal Information",
         "MEDIUM",
         "International E.164 Phone Number",
     ),
     (
         "DOB",
-        r"\b(0?[1-9]|[12]\d|3[01])[\/\-.](0?[1-9]|1[0-2])[\/\-.](19|20)\d{2}\b",
+        r"(?i)(?:(?:🎂|👶|\[dob\]|\(dob\)|(?:dob|d\.o\.b|birth|born|birthday|b'day|date\s*of\s*birth))\s*[:\-]?\s*)\b(0?[1-9]|[12]\d|3[01])[\/\-.](0?[1-9]|1[0-2])[\/\-.](19|20)\d{2}\b",
         "Personal Information",
         "MEDIUM",
         "Date of Birth (DD/MM/YYYY or similar)",
     ),
     (
         "PINCODE_IN",
-        r"(?i)\b(?:pin|pincode|postal\s*code)\s*[:\-]?\s*([1-9][0-9]{5})\b",
+        r"(?i)(?:(?:📍|📌|🏠|🏢|\[location\]|\[address\]|\(addr\)|(?:pin|pincode|postal\s*code|address))\s*[:\-]?\s*)\b([1-9][0-9]{5})\b",
         "Personal Information",
         "LOW",
         "Indian 6-digit Postal Pincode",
     ),
     (
         "US_ZIPCODE",
-        r"(?i)\b(?:zip|zipcode)\s*[:\-]?\s*(\d{5}(?:-\d{4})?)\b",
+        r"(?i)(?:(?:📍|📌|🏠|🏢|\[location\]|\[address\]|\(addr\)|(?:zip|zipcode|postal\s*code))\s*[:\-]?\s*)\b(\d{5}(?:-\d{4})?)\b",
         "Personal Information",
         "LOW",
         "US Postal Zip Code",
@@ -287,14 +287,14 @@ PATTERNS = [
     # ---------------- Health & Medical Information ----------------
     (
         "MEDICAL_RECORD_NUMBER",
-        r"(?i)\b(?:mrn|patient[_\- ]?id|medical[_\- ]?record[_\- ]?no|rx[_\- ]?number)\s*[:\-]?\s*([A-Za-z0-9\-]{4,16})\b",
+        r"(?i)(?:(?:🩺|⚕️|🏥|\[mrn\]|\(mrn\)|(?:mrn|patient[_\- ]?id|medical[_\- ]?record[_\- ]?no|rx[_\- ]?number))\s*[:\-]?\s*)([A-Za-z0-9\-]{4,16})\b",
         "Health Information",
         "HIGH",
         "Medical Record Number / Patient Identifier",
     ),
     (
         "BLOOD_GROUP",
-        r"(?i)\b(?:blood[_\- ]?(?:group|type))\s*[:\-]?\s*(A|B|AB|O)[+-]\b",
+        r"(?i)(?:(?:🩸|(?:blood[_\- ]?(?:group|type)))\s*[:\-]?\s*)(A|B|AB|O)[+-]\b",
         "Health Information",
         "LOW",
         "Patient Blood Group / Type",
@@ -323,24 +323,24 @@ PATTERNS = [
         "Hardware MAC Address",
     ),
     (
-        "URL",
-        r"\bhttps?:\/\/[^\s\"'>]+",
+        "SENSITIVE_URL",
+        r"\bhttps?:\/\/[^\s\"'>]*(?:token=|api[_\-]?key=|auth=|secret=|password=|jwt=|signature=|sig=|Bearer|192\.168\.|10\.\d+\.|172\.(?:1[6-9]|2\d|3[01])\.)[^\s\"'>]*",
         "Network Information",
-        "LOW",
-        "Web URL / Endpoint",
+        "HIGH",
+        "URL Containing Sensitive Credentials, Tokens, or Private Endpoints",
     ),
 
     # ---------------- Business Information ----------------
     (
         "EMPLOYEE_ID",
-        r"(?i)\bemp(?:loyee)?[_\- ]?id\s*[:\-]?\s*([A-Za-z0-9\-]{3,16})\b",
+        r"(?i)(?:(?:👤|🧑|🪪|\[emp\]|emp(?:loyee)?[_\- ]?id)\s*[:\-]?\s*)([A-Za-z0-9\-]{3,16})\b",
         "Business Information",
         "MEDIUM",
         "Employee Identifier / Corporate ID",
     ),
     (
         "CUSTOMER_ID",
-        r"(?i)\bcustomer[_\- ]?id\s*[:\-]?\s*([A-Za-z0-9\-]{3,16})\b",
+        r"(?i)(?:(?:👤|🧑|🪪|\[cust\]|customer[_\- ]?id)\s*[:\-]?\s*)([A-Za-z0-9\-]{3,16})\b",
         "Business Information",
         "MEDIUM",
         "Customer / Account Identifier",
@@ -354,8 +354,8 @@ PATTERNS = [
     ),
 ]
 
-# Types that require additional context check if heuristic validation isn't available
-CONTEXT_SENSITIVE_TYPES = {"BANK_ACCOUNT_IN", "CREDIT_CARD", "AADHAAR", "SWIFT_BIC"}
+# Types that require additional context check before emitting
+CONTEXT_SENSITIVE_TYPES = {"BANK_ACCOUNT_IN", "CREDIT_CARD", "AADHAAR", "SWIFT_BIC", "PASSPORT_IN", "VOTER_ID_IN"}
 
 
 def compiled_patterns():
